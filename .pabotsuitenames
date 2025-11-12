@@ -1,0 +1,9 @@
+datasources:5dff1d64bf588504102b4c230ba56132d20cf166
+commandlineoptions:9f8598a690c7367accf83ead504756ddd374acc9
+suitesfrom:no-suites-from-option
+file:2e89f3eb5ed85d2e5ab79d4cbe4bde320acca520
+--suite Suites.BillingAddressText
+--suite Suites.DDT1
+--suite Suites.DDT2 Excel
+--suite Suites.LoginTest
+--suite Suites.ProductsText
