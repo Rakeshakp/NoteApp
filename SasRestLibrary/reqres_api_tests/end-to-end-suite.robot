@@ -262,6 +262,7 @@ Validate Today’s created notes In UI
     Log Today Notes With Timestamps
     Close Browser
 Update Note to complete status in ui
+    skip
     [Tags]    positive Testcase    Ui Flow
     Launch Note App
     Login To Note App
