@@ -73,7 +73,7 @@ jobs:
             Hello,
 
             The latest test run has ${{ needs.run-tests.outputs.conclusion }}.
-            Please find the attached report files.
+            Please find the attached reports files.
 
             Regards  
             GitHub Actions
