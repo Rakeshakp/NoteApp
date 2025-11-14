@@ -1,52 +1,42 @@
-name: Run Robot Framework Tests
+name: Send Test Report
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_run:
+    workflows: ["Run Tests"]  # Replace with your actual test workflow name
+    types:
+      - completed
 
 jobs:
-  run-tests:
+  send-email:
     runs-on: ubuntu-latest
-
+    env:
+      SUBJECT: ${{ github.event.workflow_run.conclusion == 'success' && 'Test Passed: GitHub Actions Report' || 'Test Failed: GitHub Actions Report' }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v2
-
-      - name: Build Docker image
-        run: docker build -t robot-playwright .
-
-      - name: Run Robot Framework tests
-        run: docker run --rm \
-          -e DOPPLER_TOKEN=${{ secrets.DOPPLER_TOKEN }} \
-          -v ${{ github.workspace }}:/tests \
-          robot-playwright
-
-      - name: Upload Robot Framework report
-        uses: actions/upload-artifact@v4
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
         with:
-          name: robot-test-report
-          path: results/
+          name: test-report
+          path: reports
 
-      - name: Send report via email
+      - name: Send email with report
         uses: dawidd6/action-send-mail@v3
         with:
-          server_address: smtp.gmail.com
+          server_address: smtp.office365.com
           server_port: 587
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: Robot Framework Test Report
+          subject: ${{ env.SUBJECT }}
           to: rakeshkp668@gmail.com
           from: ${{ secrets.EMAIL_USERNAME }}
           body: |
             Hello,
 
-            Please find attached the latest Robot Framework test report.
+            The latest test run has ${{ github.event.workflow_run.conclusion }}.
+            Please find the attached report files.
 
-            Regards,
+            Regards,  
             GitHub Actions
-          attachments: results/log.html,results/report.html,results/output.xml
+          attachments: |
+            reports/log.html
+            reports/report.html
+            reports/output.xml
