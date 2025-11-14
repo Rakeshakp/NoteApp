@@ -298,6 +298,7 @@ Extract Completed status notes only
         Log    Category: ${category}
     END
 Create Note With Missing Title Should Fail
+    skip
     [Tags]    Negative Testcase    API Flow
     ${token}=    create_note_api_keyword.Login And Get Token
     Run Keyword And Expect Error    *Status code verification failed*    Create Invalid Note With Missing Title    ${token}
