@@ -75,7 +75,7 @@ jobs:
             The latest test run has ${{ needs.run-tests.outputs.conclusion }}.
             Please find the attached report files.
 
-            Regards,  
+            Regards  
             GitHub Actions
           attachments: |
             reports/log.html
