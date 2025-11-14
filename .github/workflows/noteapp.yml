@@ -64,6 +64,7 @@ jobs:
         with:
           server_address: smtp.office365.com
           server_port: 587
+          secure: starttls
           username: ${{ env.MAIL_USERNAME }}
           password: ${{ env.MAIL_PASSWORD }}
           from: rakeshkaader@outlook.com
