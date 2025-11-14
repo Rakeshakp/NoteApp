@@ -66,8 +66,8 @@ jobs:
           server_port: 587
           username: ${{ env.MAIL_USERNAME }}
           password: ${{ env.MAIL_PASSWORD }}
-          from: rakeshkaader@outlook.com           # ✅ Your Outlook address
-          to: rakeshkp668@gmail.com                # ✅ Your personal Gmail
+          from: rakeshkaader@outlook.com
+          to: rakeshkp668@gmail.com
           subject: ${{ env.SUBJECT }}
           body: |
             Hello,
