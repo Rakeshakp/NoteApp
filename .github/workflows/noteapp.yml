@@ -14,8 +14,8 @@ jobs:
         uses: dopplerhq/cli-action@v2
         with:
           doppler-token: ${{ secrets.DOPPLER_TOKEN }}
-          project: github-email  # Replace with your Doppler project name
-          config: dev            # Replace with your Doppler config name
+          project: github-email         
+          config: dev                   
 
       - name: Set dynamic subject
         run: |
@@ -37,7 +37,7 @@ jobs:
           server_address: smtp.office365.com
           server_port: 587
           username: ${{ env.MAIL_USERNAME }}
-          password: ${{ env.MAIL_PASSWORD }}
+          password: ${{ env.MAIL_PASSWORD }} 
           subject: ${{ env.SUBJECT }}
           to: rakeshkaader@outlook.com
           from: ${{ env.MAIL_USERNAME }}
