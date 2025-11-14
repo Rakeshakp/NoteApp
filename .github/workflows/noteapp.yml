@@ -1,25 +1,53 @@
-name: Send Test Report
+name: Run and Report Robot Framework Tests
 
 on:
-  workflow_run:
-    workflows: ["Run Robot Framework Tests"]  # ✅ Matches your test workflow name
-    types:
-      - completed
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    outputs:
+      conclusion: ${{ steps.set-conclusion.outputs.conclusion }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Docker image
+        run: docker build -t robot-playwright .
+
+      - name: Run Robot Framework tests
+        run: docker run --rm -e DOPPLER_TOKEN=${{ secrets.DOPPLER_TOKEN }} -v ${{ github.workspace }}:/tests robot-playwright
+
+      - name: Upload Robot Framework report
+        uses: actions/upload-artifact@v4
+        with:
+          name: robot-test-report
+          path: results/
+
+      - name: Set job conclusion
+        id: set-conclusion
+        run: echo "conclusion=${{ job.status }}" >> $GITHUB_OUTPUT
+
   send-email:
+    needs: run-tests
     runs-on: ubuntu-latest
     steps:
       - name: Load secrets from Doppler
         uses: dopplerhq/cli-action@v2
         with:
           doppler-token: ${{ secrets.DOPPLER_TOKEN }}
-          project: github-email         # ✅ Your Doppler project name
-          config: dev                   # ✅ Your Doppler config name
+          project: github-email
+          config: dev
 
       - name: Set dynamic subject
         run: |
-          if [ "${{ github.event.workflow_run.conclusion }}" = "success" ]; then
+          if [ "${{ needs.run-tests.outputs.conclusion }}" = "success" ]; then
             echo "SUBJECT=✅ Test Passed: GitHub Actions Report" >> $GITHUB_ENV
           else
             echo "SUBJECT=❌ Test Failed: GitHub Actions Report" >> $GITHUB_ENV
@@ -28,7 +56,7 @@ jobs:
       - name: Download test report artifact
         uses: actions/download-artifact@v3
         with:
-          name: robot-test-report       # ✅ Matches your test workflow's artifact name
+          name: robot-test-report
           path: reports
 
       - name: Send email with report
@@ -37,14 +65,14 @@ jobs:
           server_address: smtp.office365.com
           server_port: 587
           username: ${{ env.MAIL_USERNAME }}
-          password: ${{ env.MAIL_PASSWORD }}  # ✅ Use your Outlook App Password here
+          password: ${{ env.MAIL_PASSWORD }}
           subject: ${{ env.SUBJECT }}
           to: rakeshkaader@outlook.com
           from: ${{ env.MAIL_USERNAME }}
           body: |
             Hello,
 
-            The latest test run has ${{ github.event.workflow_run.conclusion }}.
+            The latest test run has ${{ needs.run-tests.outputs.conclusion }}.
             Please find the attached report files.
 
             Regards,  
