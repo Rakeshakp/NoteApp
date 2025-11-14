@@ -9,9 +9,22 @@ on:
 jobs:
   send-email:
     runs-on: ubuntu-latest
-    env:
-      SUBJECT: ${{ github.event.workflow_run.conclusion == 'success' && 'Test Passed: GitHub Actions Report' || 'Test Failed: GitHub Actions Report' }}
     steps:
+      - name: Load secrets from Doppler
+        uses: dopplerhq/cli-action@v2
+        with:
+          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
+          project: github-email  # Replace with your Doppler project name
+          config: dev            # Replace with your Doppler config name
+
+      - name: Set dynamic subject
+        run: |
+          if [ "${{ github.event.workflow_run.conclusion }}" = "success" ]; then
+            echo "SUBJECT= Test Passed: GitHub Actions Report" >> $GITHUB_ENV
+          else
+            echo "SUBJECT= Test Failed: GitHub Actions Report" >> $GITHUB_ENV
+          fi
+
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
@@ -23,11 +36,11 @@ jobs:
         with:
           server_address: smtp.office365.com
           server_port: 587
-          username: ${{ secrets.EMAIL_USERNAME }}
-          password: ${{ secrets.EMAIL_PASSWORD }}
+          username: ${{ env.MAIL_USERNAME }}
+          password: ${{ env.MAIL_PASSWORD }}
           subject: ${{ env.SUBJECT }}
-          to: rakeshkp668@gmail.com
-          from: ${{ secrets.EMAIL_USERNAME }}
+          to: rakeshkaader@outlook.com
+          from: ${{ env.MAIL_USERNAME }}
           body: |
             Hello,
 
