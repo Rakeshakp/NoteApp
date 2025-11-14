@@ -48,9 +48,9 @@ jobs:
       - name: Set dynamic subject
         run: |
           if [ "${{ needs.run-tests.outputs.conclusion }}" = "success" ]; then
-            echo "SUBJECT= Test Passed: GitHub Actions Report" >> $GITHUB_ENV
+            echo "SUBJECT=✅ Test Passed: GitHub Actions Report" >> $GITHUB_ENV
           else
-            echo "SUBJECT= Test Failed: GitHub Actions Report" >> $GITHUB_ENV
+            echo "SUBJECT=❌ Test Failed: GitHub Actions Report" >> $GITHUB_ENV
           fi
 
       - name: Download test report artifact
@@ -66,8 +66,8 @@ jobs:
           server_port: 587
           username: ${{ env.MAIL_USERNAME }}
           password: ${{ env.MAIL_PASSWORD }}
-          from: ${{ env.MAIL_USERNAME }}
-          to: rakeshkp668@gmail.com
+          from: rakeshkaader@outlook.com           # ✅ Your Outlook address
+          to: rakeshkp668@gmail.com                # ✅ Your personal Gmail
           subject: ${{ env.SUBJECT }}
           body: |
             Hello,
@@ -81,3 +81,4 @@ jobs:
             reports/log.html
             reports/report.html
             reports/output.xml
+
