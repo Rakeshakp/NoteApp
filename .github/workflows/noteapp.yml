@@ -2,7 +2,7 @@ name: Send Test Report
 
 on:
   workflow_run:
-    workflows: ["Run Tests"]  # Replace with your actual test workflow name
+    workflows: ["Run Robot Framework Tests"]  # ✅ Matches your test workflow name
     types:
       - completed
 
@@ -14,21 +14,21 @@ jobs:
         uses: dopplerhq/cli-action@v2
         with:
           doppler-token: ${{ secrets.DOPPLER_TOKEN }}
-          project: github-email         
-          config: dev                   
+          project: github-email         # ✅ Your Doppler project name
+          config: dev                   # ✅ Your Doppler config name
 
       - name: Set dynamic subject
         run: |
           if [ "${{ github.event.workflow_run.conclusion }}" = "success" ]; then
-            echo "SUBJECT= Test Passed: GitHub Actions Report" >> $GITHUB_ENV
+            echo "SUBJECT=✅ Test Passed: GitHub Actions Report" >> $GITHUB_ENV
           else
-            echo "SUBJECT= Test Failed: GitHub Actions Report" >> $GITHUB_ENV
+            echo "SUBJECT=❌ Test Failed: GitHub Actions Report" >> $GITHUB_ENV
           fi
 
-      - name: Download artifacts
+      - name: Download test report artifact
         uses: actions/download-artifact@v3
         with:
-          name: test-report
+          name: robot-test-report       # ✅ Matches your test workflow's artifact name
           path: reports
 
       - name: Send email with report
@@ -37,7 +37,7 @@ jobs:
           server_address: smtp.office365.com
           server_port: 587
           username: ${{ env.MAIL_USERNAME }}
-          password: ${{ env.MAIL_PASSWORD }} 
+          password: ${{ env.MAIL_PASSWORD }}  # ✅ Use your Outlook App Password here
           subject: ${{ env.SUBJECT }}
           to: rakeshkaader@outlook.com
           from: ${{ env.MAIL_USERNAME }}
