@@ -68,7 +68,7 @@ jobs:
           username: ${{ env.MAIL_USERNAME }}
           password: ${{ env.MAIL_PASSWORD }}
           from: rakeshkaader@outlook.com
-          to: rakeshkp668@gmail.com
+          to: rakeshkaader@outlook.com
           subject: ${{ env.SUBJECT }}
           body: |
             Hello,
