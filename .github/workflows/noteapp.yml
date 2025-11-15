@@ -38,19 +38,12 @@ jobs:
     needs: run-tests
     runs-on: ubuntu-latest
     steps:
-      - name: Load secrets from Doppler
-        uses: dopplerhq/cli-action@v2
-        with:
-          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
-          project: github-email
-          config: dev
-
       - name: Set dynamic subject
         run: |
           if [ "${{ needs.run-tests.outputs.conclusion }}" = "success" ]; then
-            echo "SUBJECT= Test Passed: GitHub Actions Report" >> $GITHUB_ENV
+            echo "SUBJECT=Test Passed: GitHub Actions Report" >> $GITHUB_ENV
           else
-            echo "SUBJECT= Test Failed: GitHub Actions Report" >> $GITHUB_ENV
+            echo "SUBJECT=Test Failed: GitHub Actions Report" >> $GITHUB_ENV
           fi
 
       - name: Download test report artifact
@@ -65,9 +58,9 @@ jobs:
           server_address: smtp.office365.com
           server_port: 587
           secure: starttls
-          username: ${{ env.MAIL_USERNAME }}
-          password: ${{ env.MAIL_PASSWORD }}
-          from: rakeshkaader@outlook.com
+          username: ${{ secrets.MAIL_USERNAME }}   # Outlook email address
+          password: ${{ secrets.MAIL_PASSWORD }}   # Outlook password or App Password
+          from: ${{ secrets.MAIL_USERNAME }}
           to: rakeshkp668@gmail.com
           subject: ${{ env.SUBJECT }}
           body: |
@@ -82,4 +75,3 @@ jobs:
             reports/log.html
             reports/report.html
             reports/output.xml
-
