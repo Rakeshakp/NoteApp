@@ -60,7 +60,7 @@ jobs:
           secure: starttls
           username: ${{ secrets.MAIL_USERNAME }}   # Outlook email address
           password: ${{ secrets.MAIL_PASSWORD }}   # Outlook password or App Password
-          from: ${{ secrets.MAIL_USERNAME }}
+          from: ${{ secrets.MAIL_USERNAME }}       # REQUIRED field
           to: rakeshkp668@gmail.com
           subject: ${{ env.SUBJECT }}
           body: |
