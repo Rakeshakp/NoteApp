@@ -1,4 +1,4 @@
-name: Run and Report Robot Frameworks Test
+name: Run and Report Robot Frameworks Tests
 
 on:
   push:
